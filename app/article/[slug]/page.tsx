@@ -48,16 +48,20 @@ export default async function ArticlePage({
 
   let bodyHtml = "";
   let coverImage = article.cover;
+  let coverCaption = "";
 
   try {
     const markdown = await getArticleBlocks(article.id);
     const html = await marked(markdown);
 
-    // 대표 이미지: 페이지 커버 우선, 없으면 본문 첫 이미지(figure 전체) 추출 후 제거
+    // 대표 이미지: 페이지 커버 우선, 없으면 본문 첫 이미지(figure 전체) 추출
+    // 캡션이 있으면 figcaption에서 가져와 커버 이미지 아래 표시
     if (!coverImage) {
       const figureMatch = html.match(/<figure>[\s\S]*?<img[^>]+src="([^"]+)"[^>]*>[\s\S]*?<\/figure>/);
       if (figureMatch) {
         coverImage = figureMatch[1];
+        const captionMatch = figureMatch[0].match(/<figcaption>([\s\S]*?)<\/figcaption>/);
+        coverCaption = captionMatch ? captionMatch[1] : "";
         bodyHtml = html.replace(figureMatch[0], "");
       } else {
         const imgMatch = html.match(/<img[^>]+src="([^"]+)"[^>]*>/);
@@ -133,14 +137,21 @@ export default async function ArticlePage({
 
       {/* 대표 이미지 */}
       {coverImage && (
-        <div className="relative w-full h-64 md:h-96 mb-8 rounded-md overflow-hidden">
-          <Image
-            src={coverImage}
-            alt={article.title}
-            fill
-            className="object-cover"
-          />
-        </div>
+        <figure className="mb-8">
+          <div className="relative w-full h-64 md:h-96 rounded-md overflow-hidden">
+            <Image
+              src={coverImage}
+              alt={article.title}
+              fill
+              className="object-cover"
+            />
+          </div>
+          {coverCaption && (
+            <figcaption className="text-center text-sm text-gray-500 mt-2 leading-relaxed">
+              {coverCaption}
+            </figcaption>
+          )}
+        </figure>
       )}
 
       {/* 본문 */}
