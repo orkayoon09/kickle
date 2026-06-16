@@ -4,7 +4,7 @@ import type { Article } from "@/lib/notion";
 
 type Props = {
   article: Article;
-  variant?: "horizontal" | "vertical" | "large";
+  variant?: "horizontal" | "horizontal-lg" | "hero-side" | "vertical" | "large";
 };
 
 function formatDate(dateStr: string) {
@@ -69,7 +69,45 @@ export default function ArticleCard({ article, variant = "horizontal" }: Props) 
     );
   }
 
-  // horizontal
+  // hero-side: 메인 히어로 오른쪽 main2/main3용 — 이미지 좌 + 텍스트 우
+  if (variant === "hero-side") {
+    return (
+      <Link href={href} className="flex gap-4 group py-4 first:pt-0 last:pb-0">
+        <Thumb src={article.cover} alt={article.title} className="shrink-0 w-5/12 h-36 md:h-44" />
+        <div className="flex flex-col justify-center min-w-0 gap-1">
+          <span className="text-xs font-semibold text-[#00B140]">{article.section}</span>
+          <h3 className="text-base md:text-lg font-bold leading-snug group-hover:text-[#00B140] transition-colors line-clamp-3">
+            {article.title}
+          </h3>
+          {article.subtitle && (
+            <p className="text-gray-500 text-sm line-clamp-2">{article.subtitle}</p>
+          )}
+          <p className="text-gray-400 text-xs mt-1">{meta}</p>
+        </div>
+      </Link>
+    );
+  }
+
+  // horizontal-lg: 최신 기사용 — 썸네일 1.5배 크기
+  if (variant === "horizontal-lg") {
+    return (
+      <Link href={href} className="flex gap-5 group py-5 border-b border-gray-100 last:border-0">
+        <Thumb src={article.cover} alt={article.title} className="shrink-0 w-36 h-[120px]" />
+        <div className="flex flex-col justify-center min-w-0">
+          <span className="text-xs font-semibold text-[#00B140] mb-0.5">{article.section}</span>
+          <h3 className="text-lg font-bold leading-snug group-hover:text-[#00B140] transition-colors line-clamp-2">
+            {article.title}
+          </h3>
+          {article.subtitle && (
+            <p className="text-gray-500 text-base mt-1 line-clamp-1">{article.subtitle}</p>
+          )}
+          <p className="text-gray-400 text-sm mt-1.5">{meta}</p>
+        </div>
+      </Link>
+    );
+  }
+
+  // horizontal (default): 섹션 목록용
   return (
     <Link href={href} className="flex gap-4 group py-4 border-b border-gray-100 last:border-0">
       <Thumb src={article.cover} alt={article.title} className="shrink-0 w-24 h-20" />

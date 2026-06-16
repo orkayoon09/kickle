@@ -31,18 +31,17 @@ export default async function HomePage() {
           )}
         </div>
 
-        {/* 메인2·3 — 우측 2단 */}
-        <div className="flex flex-col gap-4">
+        {/* 메인2·3 — 우측: 이미지+텍스트 수평 배치 2단 */}
+        <div className="flex flex-col divide-y divide-gray-100 justify-center">
           {main2 ? (
-            <ArticleCard article={main2} variant="vertical" />
+            <ArticleCard article={main2} variant="hero-side" />
           ) : (
             <div className="h-32 bg-gray-50 rounded-md flex items-center justify-center text-gray-400 text-sm">
               메인2 기사 없음
             </div>
           )}
-          <div className="border-t border-gray-100" />
           {main3 ? (
-            <ArticleCard article={main3} variant="vertical" />
+            <ArticleCard article={main3} variant="hero-side" />
           ) : (
             <div className="h-32 bg-gray-50 rounded-md flex items-center justify-center text-gray-400 text-sm">
               메인3 기사 없음
@@ -61,7 +60,7 @@ export default async function HomePage() {
         ) : (
           <div className="divide-y divide-gray-100">
             {latestArticles.map((article) => (
-              <ArticleCard key={article.id} article={article} variant="horizontal" />
+              <ArticleCard key={article.id} article={article} variant="horizontal-lg" />
             ))}
           </div>
         )}
