@@ -1,7 +1,7 @@
 import { getMainArticles, getPublishedArticles } from "@/lib/notion";
 import ArticleCard from "@/components/ArticleCard";
 
-export const revalidate = false;
+export const revalidate = 3600;
 
 export default async function HomePage() {
   const [{ main1, main2, main3 }, allArticles] = await Promise.all([

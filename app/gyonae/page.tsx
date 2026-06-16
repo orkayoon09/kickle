@@ -1,6 +1,8 @@
 import { getArticlesBySection } from "@/lib/notion";
 import ArticleCard from "@/components/ArticleCard";
 
+export const revalidate = 3600;
+
 export const dynamic = "force-static";
 
 export default async function GyonaePage() {

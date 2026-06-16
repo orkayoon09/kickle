@@ -1,15 +1,15 @@
 import { getArticlesBySection } from "@/lib/notion";
 import ArticleCard from "@/components/ArticleCard";
 
-export const dynamic = "force-static";
+export const revalidate = 3600;
 
 export default async function SesamPage() {
-  const articles = await getArticlesBySection("세상");
+  const articles = await getArticlesBySection("사회");
 
   return (
     <div>
       <h1 className="text-2xl font-bold mb-1 pb-2 border-b-2 border-[#00B140] inline-block">
-        세상
+        사회
       </h1>
       <div className="mt-6">
         {articles.length === 0 ? (

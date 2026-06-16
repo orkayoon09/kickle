@@ -10,6 +10,33 @@ import type {
 const notion = new Client({ auth: process.env.NOTION_API_KEY });
 const n2m = new NotionToMarkdown({ notionClient: notion as any });
 
+// 이미지 블록: 캡션 포함한 <figure> 태그로 렌더링
+n2m.setCustomTransformer("image", async (block: any) => {
+  const { image } = block;
+  const url =
+    image?.type === "external" ? image.external?.url : image?.file?.url;
+  if (!url) return "";
+  const caption = image?.caption?.map((c: any) => c.plain_text).join("") ?? "";
+  if (caption) {
+    return `<figure><img src="${url}" alt="${caption}" /><figcaption>${caption}</figcaption></figure>`;
+  }
+  return `<figure><img src="${url}" alt="" /></figure>`;
+});
+
+// 빈 단락 보존
+n2m.setCustomTransformer("paragraph", async (block: any) => {
+  const { paragraph } = block;
+  const text = paragraph?.rich_text?.map((t: any) => {
+    let content = t.plain_text;
+    if (t.annotations?.bold) content = `**${content}**`;
+    if (t.annotations?.italic) content = `*${content}*`;
+    if (t.href) content = `[${content}](${t.href})`;
+    return content;
+  }).join("") ?? "";
+  if (!text) return "<p>&nbsp;</p>";
+  return `<p>${text}</p>`;
+});
+
 const DB_ID = process.env.NOTION_DATABASE_ID!;
 
 export type Article = {
@@ -28,6 +55,25 @@ function isPageObject(result: QueryDataSourceResponse["results"][number]): resul
   return result.object === "page";
 }
 
+function getImageUrl(block: any): string | null {
+  if (block.type !== "image") return null;
+  const img = block.image;
+  if (img?.type === "external") return img.external?.url ?? null;
+  if (img?.type === "file") return img.file?.url ?? null;
+  return null;
+}
+
+async function fetchFirstImageUrl(pageId: string): Promise<string | null> {
+  try {
+    const res = await notion.blocks.children.list({ block_id: pageId, page_size: 5 });
+    for (const block of res.results as any[]) {
+      const url = getImageUrl(block);
+      if (url) return url;
+    }
+  } catch {}
+  return null;
+}
+
 function parseArticle(page: PageObjectResponse): Article | null {
   const props = page.properties as Record<string, any>;
 
@@ -37,8 +83,16 @@ function parseArticle(page: PageObjectResponse): Article | null {
   const subtitleArr = props["부제"]?.rich_text ?? [];
   const subtitle = subtitleArr.map((t: any) => t.plain_text).join("") || "";
 
-  const authorPeople = props["기자"]?.people ?? [];
-  const authors: string[] = authorPeople.map((p: any) => p.name ?? "");
+  // multi_select 또는 people 타입 모두 지원
+  const rawAuthors = props["기자"];
+  let authors: string[] = [];
+  if (rawAuthors?.type === "multi_select") {
+    authors = (rawAuthors.multi_select ?? []).map((p: any) => p.name ?? "");
+  } else if (rawAuthors?.type === "people") {
+    authors = (rawAuthors.people ?? []).map((p: any) => p.name ?? "");
+  } else if (rawAuthors?.type === "select" && rawAuthors.select) {
+    authors = [rawAuthors.select.name ?? ""];
+  }
 
   const section = props["주제"]?.select?.name ?? "";
   const date = props["날짜"]?.date?.start ?? "";
@@ -90,9 +144,20 @@ async function queryAll(filter: any): Promise<PageObjectResponse[]> {
   return results;
 }
 
+async function attachThumbnails(articles: Article[]): Promise<Article[]> {
+  return Promise.all(
+    articles.map(async (article) => {
+      if (article.cover) return article;
+      const url = await fetchFirstImageUrl(article.id);
+      return { ...article, cover: url };
+    })
+  );
+}
+
 export async function getPublishedArticles(): Promise<Article[]> {
   const pages = await queryAll(publishedFilter);
-  return pages.map(parseArticle).filter(Boolean) as Article[];
+  const articles = pages.map(parseArticle).filter(Boolean) as Article[];
+  return attachThumbnails(articles);
 }
 
 export async function getArticlesBySection(section: string): Promise<Article[]> {
@@ -103,7 +168,8 @@ export async function getArticlesBySection(section: string): Promise<Article[]> 
     ],
   };
   const pages = await queryAll(filter);
-  return pages.map(parseArticle).filter(Boolean) as Article[];
+  const articles = pages.map(parseArticle).filter(Boolean) as Article[];
+  return attachThumbnails(articles);
 }
 
 export async function getArticleBySlug(slug: string): Promise<Article | null> {
@@ -152,6 +218,9 @@ export async function getMainArticles(): Promise<{
 }
 
 export async function getAllSlugs(): Promise<string[]> {
-  const articles = await getPublishedArticles();
-  return articles.map((a) => a.slug);
+  const pages = await queryAll(publishedFilter);
+  return pages
+    .map(parseArticle)
+    .filter(Boolean)
+    .map((a) => a!.slug);
 }

@@ -13,7 +13,7 @@ export default function Header() {
             href="/sesang"
             className="text-base font-semibold text-[#111111] hover:text-[#00B140] transition-colors"
           >
-            세상
+            사회
           </Link>
           <Link
             href="/gyonae"

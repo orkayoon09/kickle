@@ -11,11 +11,11 @@ import Image from "next/image";
 import { marked } from "marked";
 import { notFound } from "next/navigation";
 
-export const revalidate = false;
+export const revalidate = 3600;
 export const dynamicParams = true;
 
 const SECTION_PATHS: Record<string, string> = {
-  세상: "/sesang",
+  사회: "/sesang",
   교내: "/gyonae",
 };
 
@@ -53,14 +53,20 @@ export default async function ArticlePage({
     const markdown = await getArticleBlocks(article.id);
     const html = await marked(markdown);
 
-    // 대표 이미지: 페이지 커버 우선, 없으면 본문 첫 이미지 추출 후 제거
+    // 대표 이미지: 페이지 커버 우선, 없으면 본문 첫 이미지(figure 전체) 추출 후 제거
     if (!coverImage) {
-      const imgMatch = html.match(/<img[^>]+src="([^"]+)"[^>]*>/);
-      if (imgMatch) {
-        coverImage = imgMatch[1];
-        bodyHtml = html.replace(imgMatch[0], "");
+      const figureMatch = html.match(/<figure>[\s\S]*?<img[^>]+src="([^"]+)"[^>]*>[\s\S]*?<\/figure>/);
+      if (figureMatch) {
+        coverImage = figureMatch[1];
+        bodyHtml = html.replace(figureMatch[0], "");
       } else {
-        bodyHtml = html;
+        const imgMatch = html.match(/<img[^>]+src="([^"]+)"[^>]*>/);
+        if (imgMatch) {
+          coverImage = imgMatch[1];
+          bodyHtml = html.replace(imgMatch[0], "");
+        } else {
+          bodyHtml = html;
+        }
       }
     } else {
       bodyHtml = html;
