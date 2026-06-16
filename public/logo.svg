@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 80" width="220" height="80">
+  <!-- 키클 텍스트 (Bold Korean) -->
+  <text x="0" y="68" font-family="'Pretendard', 'Apple SD Gothic Neo', sans-serif" font-size="72" font-weight="900" fill="#111111">키클</text>
+  <!-- 열쇠구멍 아이콘 -->
+  <g transform="translate(165, 4)">
+    <!-- 원 (열쇠 머리) -->
+    <circle cx="26" cy="26" r="26" fill="#00B140"/>
+    <!-- 열쇠구멍 내부 흰색 -->
+    <circle cx="26" cy="21" r="10" fill="white"/>
+    <!-- 열쇠구멍 사각형 아랫부분 -->
+    <rect x="19" y="28" width="14" height="20" rx="2" fill="white"/>
+    <!-- 가운데 작은 원 (잠금 핀) -->
+    <circle cx="26" cy="21" r="4" fill="#00B140"/>
+  </g>
+</svg>

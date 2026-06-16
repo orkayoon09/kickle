@@ -1,0 +1,13 @@
+name: Scheduled Deploy
+
+on:
+  schedule:
+    - cron: '0,30 * * * *'   # 매시 0분·30분
+  workflow_dispatch:           # 수동 트리거 (GitHub Actions 페이지에서 가능)
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Vercel Deploy
+        run: curl -X POST ${{ secrets.VERCEL_DEPLOY_HOOK_URL }}
