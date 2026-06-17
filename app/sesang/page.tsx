@@ -1,6 +1,8 @@
 import { getArticlesBySection } from "@/lib/notion";
 import ArticleCard from "@/components/ArticleCard";
+import type { Metadata } from "next";
 
+export const metadata: Metadata = { title: "사회 > 키클" };
 export const revalidate = 3600;
 
 export default async function SesamPage() {

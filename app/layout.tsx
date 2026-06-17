@@ -4,8 +4,8 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
-  title: "키클 KYCLE",
-  description: "거꾸로캠퍼스 교내 언론 키클",
+  title: "키클",
+  description: "거꾸로캠퍼스 교내 언론",
 };
 
 export default function RootLayout({

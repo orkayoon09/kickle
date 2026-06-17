@@ -3,7 +3,7 @@ import Image from "next/image";
 
 export default function Header() {
   return (
-    <header className="w-full bg-[#006B27]">
+    <header className="w-full bg-[#3D6B2E]">
       <div className="max-w-[1200px] mx-auto px-4 pt-5 pb-0 flex flex-col items-center gap-3">
         <Link href="/">
           <Image src="/logo-white.svg" alt="키클 KYCLE" width={160} height={58} priority />

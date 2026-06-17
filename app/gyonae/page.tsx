@@ -1,6 +1,8 @@
 import { getArticlesBySection } from "@/lib/notion";
 import ArticleCard from "@/components/ArticleCard";
+import type { Metadata } from "next";
 
+export const metadata: Metadata = { title: "교내 > 키클" };
 export const revalidate = 3600;
 
 export const dynamic = "force-static";

@@ -10,9 +10,22 @@ import Link from "next/link";
 import Image from "next/image";
 import { marked } from "marked";
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 
 export const revalidate = 3600;
 export const dynamicParams = true;
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const article = await getArticleBySlug(slug);
+  if (!article) return { title: "키클" };
+  const sectionPart = article.section ? ` > ${article.section}` : "";
+  return { title: `${article.title}${sectionPart} > 키클` };
+}
 
 const SECTION_PATHS: Record<string, string> = {
   사회: "/sesang",

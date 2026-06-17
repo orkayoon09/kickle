@@ -107,18 +107,18 @@ export default function ArticleCard({ article, variant = "horizontal" }: Props) 
     );
   }
 
-  // horizontal (default): 섹션 목록용 — 30% 확대
+  // horizontal (default): 섹션 목록용
   return (
     <Link href={href} className="flex gap-5 group py-5 border-b border-gray-100 last:border-0">
       <Thumb src={article.cover} alt={article.title} className="shrink-0 w-32 h-[104px]" />
       <div className="flex flex-col justify-center min-w-0">
-        <h3 className="text-xl font-bold leading-snug group-hover:text-[#00B140] transition-colors line-clamp-1">
+        <h3 className="text-base font-bold leading-snug group-hover:text-[#00B140] transition-colors line-clamp-1">
           {article.title}
         </h3>
         {article.subtitle && (
-          <p className="text-gray-500 text-lg mt-1 line-clamp-1">{article.subtitle}</p>
+          <p className="text-gray-500 text-sm mt-1 line-clamp-1">{article.subtitle}</p>
         )}
-        <p className="text-gray-400 text-sm mt-1.5">{meta}</p>
+        <p className="text-gray-400 text-xs mt-1.5">{meta}</p>
       </div>
     </Link>
   );
