@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 80" width="220" height="80">
+  <text x="0" y="68" font-family="'Pretendard', 'Apple SD Gothic Neo', sans-serif" font-size="72" font-weight="900" fill="white">키클</text>
+  <g transform="translate(165, 4)">
+    <circle cx="26" cy="26" r="26" fill="rgba(255,255,255,0.2)" stroke="white" stroke-width="2.5"/>
+    <circle cx="26" cy="21" r="10" fill="white"/>
+    <rect x="19" y="28" width="14" height="20" rx="2" fill="white"/>
+    <circle cx="26" cy="21" r="4" fill="#00B140"/>
+  </g>
+</svg>

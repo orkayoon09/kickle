@@ -52,7 +52,7 @@ export default async function HomePage() {
 
       {/* 최신 기사 목록 */}
       <section>
-        <h2 className="text-lg font-bold mb-2 pb-2 border-b-2 border-[#00B140] inline-block">
+        <h2 className="text-xl font-bold mb-2 pb-2 border-b-[3px] border-[#00B140] inline-block">
           최신 기사
         </h2>
         {latestArticles.length === 0 ? (
